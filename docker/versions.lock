@@ -1,0 +1,38 @@
+# ============================================================
+# Verified Component Versions
+# ============================================================
+# All versions below have been tested together and confirmed
+# working. Update this file ONLY after team verification.
+#
+# Format: component=version  # license | verification date
+# ============================================================
+
+# --- Runtime ---
+ollama=0.6.2                        # MIT      | 2026-03-16
+docker-compose-spec=3.8             # -        | 2026-03-16
+
+# --- LLM Models ---
+qwen2.5-coder:3b=latest             # Apache 2.0 | 2026-03-16
+qwen2.5-coder:7b=latest             # Apache 2.0 | 2026-03-16
+qwen2.5-coder:14b=latest            # Apache 2.0 | 2026-03-16
+qwen2.5-coder:32b=latest            # Apache 2.0 | 2026-03-16
+
+# --- Embedding Models ---
+nomic-embed-text=latest              # Apache 2.0 | 2026-03-16
+
+# --- Client Tools (installed on host, not in Docker) ---
+cline=latest                         # Apache 2.0 | 2026-03-16
+aider-chat=latest                    # Apache 2.0 | 2026-03-16
+
+# --- Optional: RAG Components ---
+lancedb=latest                       # Apache 2.0 | 2026-03-16
+
+# ============================================================
+# How to update:
+# 1. Test new version locally
+# 2. Run: docker compose up --build
+# 3. Run: ../scripts/benchmark.sh
+# 4. Run: ../scripts/network-monitor.sh check
+# 5. Update version + date above
+# 6. Commit and notify team
+# ============================================================

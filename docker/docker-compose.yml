@@ -1,0 +1,50 @@
+# ============================================================
+# Local LLM Stack -- Docker Compose
+# ============================================================
+# Usage:
+#   docker compose up              # Start (foreground)
+#   docker compose up -d           # Start (background)
+#   docker compose down            # Stop
+#   docker compose logs -f         # View logs
+#
+# Configuration: edit .env (all settings are there)
+# ============================================================
+
+services:
+  ollama:
+    image: ollama/ollama:${OLLAMA_VERSION:-0.6.2}
+    container_name: local-llm-ollama
+    entrypoint: ["/bin/bash", "/entrypoint.sh"]
+    ports:
+      - "${OLLAMA_HOST:-127.0.0.1}:${OLLAMA_PORT:-11434}:11434"
+    volumes:
+      # Persist models across restarts (no re-download)
+      - ollama-models:/root/.ollama
+      # Mount entrypoint script
+      - ./entrypoint.sh:/entrypoint.sh:ro
+    environment:
+      - LLM_MODEL=${LLM_MODEL:-qwen2.5-coder:7b}
+      - EMBEDDING_MODEL=${EMBEDDING_MODEL:-nomic-embed-text}
+      - NUM_CTX=${NUM_CTX:-4096}
+      - TEMPERATURE=${TEMPERATURE:-0.2}
+      - TOP_P=${TOP_P:-0.9}
+      - MAX_LOADED_MODELS=${MAX_LOADED_MODELS:-1}
+      - KEEP_ALIVE=${KEEP_ALIVE:-10m}
+      - OLLAMA_PORT=${OLLAMA_PORT:-11434}
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:11434/api/tags"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+    # --- Resource limits (adjust for your hardware) ---
+    # Uncomment and modify if needed:
+    # deploy:
+    #   resources:
+    #     limits:
+    #       memory: 12G
+
+volumes:
+  ollama-models:
+    name: local-llm-models
