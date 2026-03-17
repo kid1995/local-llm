@@ -28,6 +28,8 @@ Zeitpunkt, nicht nur konfigurativ, sondern architektonisch.
 | [docs/data-privacy-proof.md](docs/data-privacy-proof.md) | Nachweis: Kein Datenabfluss |
 | [docs/testing-guide.md](docs/testing-guide.md) | PoC-Testplan und Evaluierung |
 | [docs/model-switching.md](docs/model-switching.md) | Modellwechsel bei Hardware-Upgrade |
+| [docs/confluence-wiki.md](docs/confluence-wiki.md) | Confluence-Wiki (1:1 kopierbar) |
+| [docs/poc-demo-guide.md](docs/poc-demo-guide.md) | Demo-Guide: Was zeigen, was coden |
 | [docker/](docker/) | Docker-Distribution fuer Team-Rollout |
 
 ## Schnellstart
