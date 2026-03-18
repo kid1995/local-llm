@@ -250,14 +250,49 @@ trivy image --format table ollama/ollama:0.6.2 > trivy-report.txt
 
 [SCREENSHOT: Trivy-Scan-Ergebnis]
 
-### 2.4 OpenSSF Scorecard (optional, hohe Glaubwuerdigkeit)
+### 2.4 SBOM generieren (Software Bill of Materials)
+
+Die SBOM dokumentiert alle Abhaengigkeiten im Docker-Image.
+BaFin/DORA erfordern zunehmend diese Transparenz.
+
+```bash
+# Trivy installieren (falls noch nicht vorhanden)
+brew install trivy
+
+# SBOM im CycloneDX-Format generieren
+trivy image --format cyclonedx \
+  ollama/ollama:0.6.2 > sbom-ollama-cyclonedx.json
+
+# SBOM auf Schwachstellen pruefen
+trivy sbom sbom-ollama-cyclonedx.json
+
+# Statistik ausgeben: Anzahl Komponenten + Lizenzen
+cat sbom-ollama-cyclonedx.json | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+components = data.get('components', [])
+print(f'Gesamt-Komponenten: {len(components)}')
+licenses = {}
+for c in components:
+    for l in c.get('licenses', []):
+        lid = l.get('license', {}).get('id', 'Unbekannt')
+        licenses[lid] = licenses.get(lid, 0) + 1
+print('Lizenzen:')
+for k, v in sorted(licenses.items(), key=lambda x: -x[1]):
+    print(f'  {k}: {v}')
+"
+```
+
+[SCREENSHOT: SBOM-Statistik -- Anzahl Komponenten und Lizenz-Verteilung]
+
+### 2.5 OpenSSF Scorecard (optional, hohe Glaubwuerdigkeit)
 
 ```bash
 # Scorecard installieren
 brew install scorecard
 
 # Ollama bewerten
-scorecard --repo=github.com/ollama/ollama --format=json
+scorecard --repo=github.com/ollama/ollama
 
 # Oder online pruefen (kein Install noetig):
 # https://scorecard.dev/viewer/?uri=github.com/ollama/ollama

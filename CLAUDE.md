@@ -27,6 +27,8 @@ docs/
   model-switching.md         -- How to switch models on hardware upgrade
   si-governance-context.md   -- SI governance, CoSI API, Softwareausbauprozess
   coding-agents-landscape.md -- Comparison: Gemini CLI, Claude Code, MistralVibe, OpenCode
+  oss-audit-guide.md         -- OSS audit framework (Trivy, SBOM, Scorecard, checklists)
+  poc-open-items.md          -- Checklist of missing info for PoC completion
   confluence-wiki.md         -- Confluence wiki page (copy-paste ready)
   poc-demo-guide.md          -- 3-day demo guide: what to code, how to present
 scripts/

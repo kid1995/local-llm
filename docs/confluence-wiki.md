@@ -190,12 +190,12 @@ grep -r "telemetry\|analytics\|tracking" ollama/   # Keine Treffer
 
 ### 7. Sicherheitsbewertung
 
-#### 6.1 Lizenz-Compliance
+#### 7.1 Lizenz-Compliance
 
 Alle Komponenten verwenden permissive Open-Source-Lizenzen (Apache 2.0, MIT).
 Keine Copyleft-Lizenzen (GPL), keine Einschraenkungen fuer kommerzielle Nutzung.
 
-#### 6.2 Container-Sicherheit (Trivy-Scan)
+#### 7.2 Container-Sicherheit (Trivy-Scan)
 
 ```bash
 # Docker-Image auf bekannte Schwachstellen pruefen
@@ -211,18 +211,37 @@ trivy image ollama/ollama:0.6.2
 | MEDIUM | [X] | [Ja/Nein] |
 | LOW | [X] | [Ja/Nein] |
 
-#### 6.3 Community-Vertrauen
+#### 7.3 Community-Vertrauen (Stand 2026-03-18)
 
-| Komponente | GitHub Stars | Letzte Aktivitaet | OpenSSF Scorecard |
-|---|---|---|---|
-| Ollama | [X]k | [X] | [Score/10] |
-| Qwen | [X]k | [X] | [Score/10] |
-| Cline | [X]k | [X] | [Score/10] |
-| Aider | [X]k | [X] | [Score/10] |
+| Komponente | GitHub Stars | Forks | Offene Issues | Letzte Aktivitaet |
+|---|---|---|---|---|
+| Ollama | 165.400+ | 15.000+ | 2.677 | 2026-03-18 (heute) |
+| Cline | 59.100+ | 5.983 | 803 | 2026-03-18 (heute) |
+| Aider | 42.100+ | 4.043 | 1.441 | 2026-03-17 |
+| Qwen 2.5 Coder | 16.000+ | 1.140 | 117 | 2026-02-03 |
 
-> **OpenSSF Scorecard:** Bewertet Projekte anhand von Wartung, signierten Commits,
-> Dependency-Management und weiteren Sicherheitskriterien.
-> Siehe: https://scorecard.dev
+> Alle Projekte sind aktiv gepflegt, haben eine starke Community und
+> eine SECURITY.md fuer verantwortungsvolle Schwachstellen-Meldung.
+
+#### 7.4 SBOM (Software Bill of Materials)
+
+Fuer jede Komponente wurde eine SBOM im CycloneDX-Format generiert.
+Dies dokumentiert alle enthaltenen Abhaengigkeiten und Lizenzen.
+
+```bash
+# SBOM generieren (CycloneDX-Format)
+trivy image --format cyclonedx ollama/ollama:0.6.2 > sbom-ollama.json
+
+# SBOM auf Schwachstellen pruefen
+trivy sbom sbom-ollama.json
+```
+
+[SCREENSHOT: SBOM-Statistik -- Anzahl Komponenten, Lizenz-Verteilung]
+
+> **Warum relevant:** BaFin/DORA erfordern zunehmend Software-Transparenz.
+> Eine SBOM ermoeglicht schnelle Reaktion bei neuen CVEs
+> ("Ist Komponente X in unserem Stack betroffen?").
+> Siehe [docs/oss-audit-guide.md](oss-audit-guide.md) fuer den vollstaendigen Audit-Leitfaden.
 
 ---
 

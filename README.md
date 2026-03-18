@@ -30,6 +30,7 @@ Zeitpunkt, nicht nur konfigurativ, sondern architektonisch.
 | [docs/model-switching.md](docs/model-switching.md) | Modellwechsel bei Hardware-Upgrade |
 | [docs/si-governance-context.md](docs/si-governance-context.md) | SI-Governance, CoSI API, Freigabeprozess |
 | [docs/coding-agents-landscape.md](docs/coding-agents-landscape.md) | Vergleich: Gemini CLI, Claude Code, MistralVibe, OpenCode |
+| [docs/oss-audit-guide.md](docs/oss-audit-guide.md) | OSS-Audit-Leitfaden (Trivy, SBOM, Scorecard) |
 | [docs/poc-open-items.md](docs/poc-open-items.md) | Offene Punkte und fehlende Informationen |
 | [docs/confluence-wiki.md](docs/confluence-wiki.md) | Confluence-Wiki (1:1 kopierbar) |
 | [docs/poc-demo-guide.md](docs/poc-demo-guide.md) | Demo-Guide: Was zeigen, was coden |

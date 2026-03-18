@@ -16,8 +16,8 @@
 | # | Was fehlt | Wer | Status |
 |---|---|---|---|
 | 4 | **Trivy-Scan-Ergebnis** fuer `ollama/ollama:0.6.2`. Befehl: `trivy image ollama/ollama:0.6.2`. IT-Security wird danach fragen. | Selbst ausfuehren | [ ] |
-| 5 | **GitHub Stars + letzte Aktivitaet** fuer Ollama, Qwen, Cline, Aider. Fuer die Community-Trust-Tabelle in der Confluence-Seite. | Claude kann abrufen | [ ] |
-| 6 | **OpenSSF Scorecard** fuer Ollama. Online: https://scorecard.dev oder `scorecard --repo=github.com/ollama/ollama`. Hohe Glaubwuerdigkeit bei InfoSec. | Claude kann abrufen | [ ] |
+| 5 | **GitHub Stars + letzte Aktivitaet** fuer Ollama, Qwen, Cline, Aider. Fuer die Community-Trust-Tabelle in der Confluence-Seite. | Claude abgerufen | [x] |
+| 6 | **OpenSSF Scorecard** fuer Ollama. `scorecard --repo=github.com/ollama/ollama` (lokal ausfuehren, API erfordert Auth). | Selbst ausfuehren | [ ] |
 | 7 | **Echtes Stueck Legacy-Code** (anonymisiert falls noetig). Fuer Demo 4 (Legacy-Code-Analyse). Ein Java-Service oder aehnliches, das dem lokalen Modell gefuettert werden kann. Dies ist die staerkste Demo (6 Unterstuetzer intern). | Selbst auswaehlen | [ ] |
 
 ## SI-intern (nur intern zu finden)
