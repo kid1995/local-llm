@@ -7,9 +7,9 @@
 
 | Tag | Fokus | Ergebnis |
 |---|---|---|
-| Tag 1 | Setup + Code-Tests | Laufendes System, ausgefuellte Test-Tabelle |
-| Tag 2 | Datenschutz + Performance + Security | Screenshots, Messwerte, Trivy-Scan |
-| Tag 3 | Confluence-Seite + Demo-Vorbereitung | Fertige Wiki-Seite, Demo-Script |
+| Tag 1 | Setup + Code-Tests + SI-Use-Cases | Laufendes System, Test-Tabelle, Legacy-Code-Demo |
+| Tag 2 | Datenschutz + Performance + Security + Vergleich | Screenshots, Messwerte, CoSI-Vergleich |
+| Tag 3 | Confluence-Seite + Demo-Vorbereitung | Fertige Wiki-Seite, Demo-Script mit SI-Kontext |
 
 ---
 
@@ -94,6 +94,47 @@ Prompt: "Add logging to all functions in this module"
 
 **Was Stakeholder sehen wollen:** Cline modifiziert mehrere Dateien
 gleichzeitig im VS Code. Screenshot der Diff-Ansicht.
+
+### 1.3 SI-spezifische Use-Cases demonstrieren (Bonus, hoher Impact)
+
+Aus der internen Ideensammlung "KI-gestuetzte Dokumentation" sind die
+Anwendungsfaelle 3 und 4 die staerksten Kandidaten fuer den PoC.
+
+#### Demo 4: Legacy-Code-Analyse (Anwendungsfall 3 -- 6 Unterstuetzer)
+
+Warum: Adressiert das Problem der "Kopfmonopole" und Wissensverlusts.
+Hoechste Anzahl Unterstuetzer (Marian, Patrick, Oliver, Marc, Maik, Timo).
+
+```bash
+# Nimm ein echtes Stueck Legacy-Code (z.B. ein altes Java-Modul)
+# und lass das lokale Modell es analysieren:
+cat LegacyPaymentService.java | ollama run qwen2.5-coder:7b \
+  "Analysiere diesen Code. Erklaere:
+   1. Was macht dieser Service?
+   2. Welche externen Abhaengigkeiten gibt es?
+   3. Welche Geschaeftslogik ist implementiert?
+   4. Welche Risiken siehst du bei einer Modernisierung?"
+```
+
+**Was Stakeholder sehen wollen:** Das Modell versteht die Geschaeftslogik
+und kann sie in verstaendlicher Sprache erklaeren -- **ohne dass der Code
+das Geraet verlaesst**.
+
+**Warum besser als CoSI API:** Bei Legacy-Code mit versicherungsspezifischer
+Geschaeftslogik ist es ein klarer Vorteil, dass keine Daten an GCP gesendet werden.
+
+#### Demo 5: Automatische Code-Dokumentation (Anwendungsfall 4 -- 5 Unterstuetzer)
+
+```bash
+# In Aider: Docstrings automatisch generieren
+aider --model ollama_chat/qwen2.5-coder:7b \
+  "Fuege zu allen oeffentlichen Methoden in diesem Modul \
+   Javadoc-Kommentare hinzu. Beschreibe Parameter, Rueckgabewerte \
+   und Geschaeftslogik."
+```
+
+**Was Stakeholder sehen wollen:** Bestehender Code bekommt automatisch
+Dokumentation -- direkt in der IDE, ohne Copy-Paste in ein externes Tool.
 
 ---
 
@@ -302,15 +343,29 @@ sudo lsof -i -n -P | grep ollama
 # Zeigen: nur 127.0.0.1
 ```
 
-**Minute 8-9: Kosten und Vergleich**
+**Minute 8-9: Einordnung in SI-Landschaft**
 
-Folie/Confluence-Tabelle zeigen:
-- Lokal: 0 EUR/Monat, 10/10 Datenschutz
-- Cloud: 20-100 EUR/Nutzer/Monat, vertragabhaengig
+Confluence-Tabelle zeigen:
+
+```
+| Weg          | Qualitaet | Datenschutz | Kosten  | Verfuegbar? |
+|--------------|-----------|-------------|---------|-------------|
+| CoSI API     | Hoch      | GCP (EU)    | Gering  | Ja (Dev-Key)|
+| Vertex AI    | Sehr hoch | GCP (EU)    | Mittel  | Teilweise*  |
+| Lokales LLM  | Mittel    | MAXIMAL     | 0 EUR   | Sofort      |
+
+* Anthropic: Einkaufsfreigabe fehlt noch
+```
+
+Kernbotschaft: "Das ist kein Entweder-Oder. Fuer Legacy-Code-Analyse
+mit vertraulichem Code ist lokal ideal. Fuer komplexe Architektur-Fragen
+ist CoSI API besser. Beides ergaenzt sich."
 
 **Minute 10: Empfehlung**
 
-"Pilotphase mit 3-5 Entwicklern, parallel zu Gemini CLI."
+"Pilotphase mit 3-5 Entwicklern, parallel zu CoSI API und Gemini CLI.
+Erster Pilot-Use-Case: Legacy-Code-Analyse (6 Unterstuetzer intern).
+Nach Google Cloud Next (April) Neubewertung der Cloud-Optionen."
 
 ---
 
@@ -320,11 +375,13 @@ Folie/Confluence-Tabelle zeigen:
 
 ```
 [ ] Management Summary mit Ergebnis-Tabelle
-[ ] Architektur-Diagramm
+[ ] Einordnung in SI-Landschaft (CoSI API vs. Lokal vs. Vertex AI)
+[ ] Architektur-Diagramm (inkl. CoSI-Vergleich)
 [ ] Lizenz-Tabelle mit Links zu LICENSE-Dateien
 [ ] Mindestens 1 Datenschutz-Nachweis mit Screenshot
 [ ] Performance-Messwerte (Tokens/sec, RAM)
 [ ] Code-Qualitaets-Scores (mindestens 3 Aufgaben)
+[ ] Governance-Vorteil erklaert (OSS-Pfad, keine Cloud-Board-Pruefung)
 [ ] Empfehlung und naechste Schritte
 ```
 
@@ -334,8 +391,11 @@ Folie/Confluence-Tabelle zeigen:
 [ ] Trivy-Scan-Ergebnis
 [ ] OpenSSF Scorecard
 [ ] Firewall-Blockade-Test (Screenshot)
-[ ] Vergleichstabelle Lokal vs. Cloud
+[ ] Coding-Agents-Vergleichstabelle (Gemini CLI, Claude Code, MistralVibe, OpenCode)
+[ ] SI-Use-Case-Demo: Legacy-Code-Analyse (Anwendungsfall 3)
+[ ] SI-Use-Case-Demo: Code-Dokumentation (Anwendungsfall 4)
 [ ] Hardware-Skalierungs-Tabelle
+[ ] Verweis auf HuggingFace-Freigabeprozess als Vorbild
 ```
 
 ### Kann (bei Zeit)
@@ -345,6 +405,7 @@ Folie/Confluence-Tabelle zeigen:
 [ ] Entwickler-Feedback-Fragebogen
 [ ] Detaillierter Trivy-Report als Anhang
 [ ] Live-Demo-Recording (Bildschirm-Aufnahme)
+[ ] Vertex AI Anthropic Auflagen-Vergleich (zeigt Komplexitaet der Cloud-Alternative)
 ```
 
 ---
@@ -355,7 +416,15 @@ Folie/Confluence-Tabelle zeigen:
 2. **Zeige die Firewall-Blockade** -- "Es funktioniert ohne Internet" ist
    der staerkste einzelne Satz
 3. **Erwarte die Frage "Wie gut ist es wirklich?"** -- sei ehrlich:
-   "70% so gut wie ChatGPT, aber 100% datensicher und 100% kostenlos"
-4. **Positioniere als Ergaenzung** -- nicht als Konkurrenz zu Gemini CLI
+   "70% so gut wie Gemini/Claude, aber 100% datensicher und 100% kostenlos"
+4. **Positioniere als Ergaenzung** -- nicht als Konkurrenz zu CoSI API oder
+   Gemini CLI, sondern als Offline-Fallback und Datenschutz-Maximum
 5. **Betone den Lerneffekt** -- Entwickler lernen, KI kritisch einzusetzen,
    bevor teure Cloud-Tools ausgerollt werden
+6. **Nutze die interne Ideenliste** -- "6 von euren Kollegen unterstuetzen
+   Legacy-Code-Analyse als Use Case -- genau das kann dieses Tool"
+7. **Governance-Argument** -- "Kein Softwareausbauprozess, kein Cloud Board,
+   kein Einkauf -- OSS-Workflow genuegt, analog zu HuggingFace-Modellen"
+8. **Timeline-Argument** -- "Waehrend wir auf die Einkaufsfreigabe fuer
+   Anthropic und Klarheit nach Google Cloud Next warten, koennen Entwickler
+   mit dem lokalen Setup bereits produktiv arbeiten"

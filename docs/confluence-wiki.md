@@ -46,24 +46,72 @@ Entwickler benoetigen KI-Unterstuetzung beim Programmieren. Cloud-basierte Loesu
 - **Kosten:** 20-100 EUR pro Nutzer pro Monat
 - **Abhaengigkeit:** Internet-Verbindung zwingend erforderlich
 
-**Frage:** Kann ein rein lokales Setup eine brauchbare Alternative bieten?
+**Frage:** Kann ein rein lokales Setup eine brauchbare Ergaenzung bieten?
 
 ---
 
-### 3. Loesungsarchitektur
+### 3. Einordnung in die SI-Landschaft
+
+#### 3.1 Zugangswege zu KI-Modellen in der SI
+
+| Weg | Beschreibung | Status | Datenschutz | Kosten |
+|---|---|---|---|---|
+| **CoSI API** | Interner Proxy auf Vertex AI (Gemini) | Verfuegbar (Dev-Key) | Daten in GCP (EU) | API-Kosten (gering) |
+| **Vertex AI direkt** | GCP-Zugriff auf Anthropic, Gemini, etc. | InfoSec freigegeben, Einkauf offen | Daten in GCP (EU) | Mittel |
+| **Gemini CLI** | Google CLI-Tool | Custom-URL moeglich, API-Key noch nicht | Daten in GCP (EU) | API-Kosten |
+| **Lokales LLM (dieser PoC)** | Ollama + Qwen auf dem Geraet | Sofort verfuegbar (OSS) | **Maximal (lokal)** | **0 EUR** |
+
+> **Wichtig:** Lokales LLM ist **kein Ersatz** fuer CoSI API oder Gemini CLI,
+> sondern eine Ergaenzung fuer Offline-Szenarien und maximalen Datenschutz.
+
+#### 3.2 Coding-Agents im Vergleich
+
+| Software | Open Source? | Modelle auf Vertex AI (EU) | SI-Freigabe? | Lokale Modelle? |
+|---|---|---|---|---|
+| Gemini CLI | Ja | Bis Gemini 2.5 | Ja | Via LiteLLM |
+| Claude Code | Nein | Sonnet/Opus 4.6 | Nein (Einkauf fehlt) | Via Ollama |
+| MistralVibe | Ja | Codestral 2 | Nein | Ja |
+| OpenCode | Ja | - | - | Ja (Models.dev) |
+
+**Wichtiger Termin:** Google Cloud Next (22.-24. April 2026) -- voraussichtlich
+Klarheit ueber EU-Verfuegbarkeit neuer Modelle.
+
+#### 3.3 Governance-Vorteil des lokalen Ansatzes
+
+Der Softwareausbauprozess der SI verlangt fuer neue Loesungen:
+
+| Anforderung | Cloud-Loesung | Lokales LLM |
+|---|---|---|
+| Europaeische Server | Muss geprueft werden | Entfaellt (laeuft lokal) |
+| Keine Daten zum Training | Vertraglich absichern | Entfaellt (kein externes Modell) |
+| Einkaufsfreigabe | Ja | Nein (OSS, kostenlos) |
+| Betriebsverantwortung | Muss geklaert werden | Eigenverantwortung |
+| Cloud-Board-Pruefung | Ja | Nicht relevant |
+
+> **Der OSS-Workflow ist der relevante Freigabepfad.** Apache 2.0 und MIT
+> sind bereits fuer andere HuggingFace-Modelle in der SI freigegeben
+> (z.B. jina-embeddings-v2-base-de, sentence-transformers).
+
+---
+
+### 4. Loesungsarchitektur
 
 ```
-+------------------------------------------------------------------+
-|  Lokales Geraet (MacBook / Linux-Laptop)                         |
-|                                                                   |
-|  +------------------+   localhost:11434   +------------------+    |
-|  | VS Code + Cline  | -----------------> | Ollama           |    |
-|  | oder              | <----------------- | (LLM-Server)    |    |
-|  | Terminal + Aider  |                     | qwen2.5-coder   |    |
-|  +------------------+                     +------------------+    |
-|                                                                   |
-|  Kein ausgehender Netzwerkverkehr                                 |
-+------------------------------------------------------------------+
++-------------------------------------------------------------------+
+|                      SI-Infrastruktur                              |
+|                                                                    |
+|  Weg 1: CoSI API (zentral, verfuegbar)                             |
+|  +----------+    VPN    +-----------+    GCP    +---------------+  |
+|  | Entwickler| -------> | CoSI Proxy| -------> | Vertex AI     |  |
+|  | (IDE)     |          | (intern)  |          | Gemini Flash  |  |
+|  +----------+           +-----------+          +---------------+  |
+|                                                                    |
+|  Weg 2: Lokal (dieser PoC)                                         |
+|  +----------+  localhost  +----------+                              |
+|  | Entwickler| ---------> | Ollama   |   KEIN NETZWERK             |
+|  | (IDE)     | <--------- | (lokal)  |                              |
+|  +----------+             +----------+                              |
++-------------------------------------------------------------------+
 ```
 
 > **Confluence-Tipp:** Dieses Diagramm als draw.io-Makro einfuegen fuer bessere
@@ -71,7 +119,7 @@ Entwickler benoetigen KI-Unterstuetzung beim Programmieren. Cloud-basierte Loesu
 
 ---
 
-### 4. Komponenten-Uebersicht
+### 5. Komponenten-Uebersicht
 
 | Komponente | Version | Rolle | Lizenz | Kommerziell? | Lizenz-Link |
 |---|---|---|---|---|---|
@@ -86,7 +134,7 @@ Entwickler benoetigen KI-Unterstuetzung beim Programmieren. Cloud-basierte Loesu
 
 ---
 
-### 5. Datenschutz-Nachweis
+### 6. Datenschutz-Nachweis
 
 Der PoC wurde mit drei unabhaengigen Methoden auf Datenabfluss geprueft:
 
@@ -140,7 +188,7 @@ grep -r "telemetry\|analytics\|tracking" ollama/   # Keine Treffer
 
 ---
 
-### 6. Sicherheitsbewertung
+### 7. Sicherheitsbewertung
 
 #### 6.1 Lizenz-Compliance
 
@@ -178,7 +226,7 @@ trivy image ollama/ollama:0.6.2
 
 ---
 
-### 7. Performance-Ergebnisse
+### 8. Performance-Ergebnisse
 
 | Metrik | Wert | Akzeptabel? |
 |---|---|---|
@@ -192,7 +240,7 @@ trivy image ollama/ollama:0.6.2
 
 ---
 
-### 8. Code-Qualitaets-Ergebnisse
+### 9. Code-Qualitaets-Ergebnisse
 
 10 typische Entwicklungsaufgaben wurden mit dem lokalen Modell getestet
 (Details: siehe Testplan im Repository).
@@ -223,7 +271,7 @@ trivy image ollama/ollama:0.6.2
 
 ---
 
-### 9. Hardware-Skalierung
+### 10. Hardware-Skalierung
 
 | Geraet (RAM) | Empfohlenes Modell | Qualitaet | Anmerkung |
 |---|---|---|---|
@@ -241,7 +289,7 @@ docker compose up
 
 ---
 
-### 10. Aufwand und Kosten
+### 11. Aufwand und Kosten
 
 | Posten | Einmalig | Laufend |
 |---|---|---|
@@ -254,7 +302,7 @@ docker compose up
 
 ---
 
-### 11. Risiken und Limitationen
+### 12. Risiken und Limitationen
 
 | Risiko | Schwere | Mitigation |
 |---|---|---|
@@ -265,16 +313,59 @@ docker compose up
 
 ---
 
-### 12. Empfehlung und naechste Schritte
+### 13. Konkrete Anwendungsfaelle in der SI
+
+Aus der internen Ideensammlung (vgl. "KI-gestuetzte Dokumentation") sind
+folgende Anwendungsfaelle mit einem lokalen LLM umsetzbar:
+
+| # | Anwendungsfall | Unterstuetzer | Horizont | Lokal machbar? |
+|---|---|---|---|---|
+| 3 | **Analyse & Doku von Legacy-Code** | 6 | Kurzfristig | Ja -- Hauptkandidat |
+| 4 | **Autom. Erstellung von Code-Doku** | 5 | Kurzfristig | Ja -- Hauptkandidat |
+| 1 | Qualitaets-Check fuer Anforderungen | 5 | Kurzfristig | Ja |
+| 5 | Generierung von Release Notes | 2 | Kurzfristig | Ja |
+
+#### Beispiel: Legacy-Code-Analyse (Anwendungsfall 3)
+
+Das lokale Modell kann bestehende Code-Basen ohne Dokumentation analysieren,
+Erklaerungen generieren und Abhaengigkeiten zusammenfassen. Dies adressiert
+direkt das Problem der "Kopfmonopole" und des Wissensverlusts.
+
+```bash
+# Beispiel: Legacy-Code an lokales Modell senden
+cat src/legacy/PaymentService.java | ollama run qwen2.5-coder:7b \
+  "Analysiere diesen Code. Erklaere die Geschaeftslogik, \
+   identifiziere Abhaengigkeiten und schlage Verbesserungen vor."
+```
+
+#### Beispiel: Automatische Code-Dokumentation (Anwendungsfall 4)
+
+```bash
+# In Aider: Docstrings und Kommentare generieren lassen
+aider --model ollama_chat/qwen2.5-coder:7b \
+  "Fuege zu allen oeffentlichen Methoden in src/services/ \
+   Javadoc-Kommentare hinzu."
+```
+
+> **Vorteil gegenueber CoSI API:** Bei der Analyse von Legacy-Code und
+> interner Geschaeftslogik verlassen **keine sensiblen Daten** das Geraet.
+> Dies ist besonders relevant fuer versicherungsspezifischen Code.
+
+---
+
+### 14. Empfehlung und naechste Schritte
 
 **Ergebnis des PoC:** [BESTANDEN / NICHT BESTANDEN]
 
 **Empfohlene naechste Schritte:**
 
-1. [ ] Rollout fuer 3-5 interessierte Entwickler (Pilotphase)
-2. [ ] Feedback nach 2 Wochen sammeln
-3. [ ] Bei positivem Feedback: Erweiterung auf Team-Ebene
-4. [ ] Paralleler Betrieb mit Gemini CLI evaluieren
+1. [ ] OSS-Freigabe fuer Qwen-Modelle ueber den Softwareausbauprozess (analog HuggingFace)
+2. [ ] Rollout fuer 3-5 interessierte Entwickler (Pilotphase)
+3. [ ] Feedback nach 2 Wochen sammeln
+4. [ ] Legacy-Code-Analyse (Anwendungsfall 3) als erstes Pilotprojekt
+5. [ ] Bei positivem Feedback: Erweiterung auf Team-Ebene
+6. [ ] Paralleler Betrieb mit CoSI API und Gemini CLI evaluieren
+7. [ ] Nach Google Cloud Next (April 2026): Neubewertung der Cloud-Optionen
 
 ---
 
@@ -285,6 +376,8 @@ docker compose up
 | Repository | Vollstaendige Dokumentation + Skripte | [GitHub-Link] |
 | Testplan | 10 Code-Aufgaben + Scoring | [docs/testing-guide.md] |
 | Datenschutz-Nachweis | 6 Methoden im Detail | [docs/data-privacy-proof.md] |
+| SI-Governance-Kontext | Einordnung in SI-Prozesse | [docs/si-governance-context.md] |
+| Coding-Agents-Landschaft | Vergleich aller Optionen | [docs/coding-agents-landscape.md] |
 | Docker-Setup | Team-Distribution | [docker/README.md] |
 
 ---

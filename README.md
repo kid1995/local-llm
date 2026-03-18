@@ -28,6 +28,9 @@ Zeitpunkt, nicht nur konfigurativ, sondern architektonisch.
 | [docs/data-privacy-proof.md](docs/data-privacy-proof.md) | Nachweis: Kein Datenabfluss |
 | [docs/testing-guide.md](docs/testing-guide.md) | PoC-Testplan und Evaluierung |
 | [docs/model-switching.md](docs/model-switching.md) | Modellwechsel bei Hardware-Upgrade |
+| [docs/si-governance-context.md](docs/si-governance-context.md) | SI-Governance, CoSI API, Freigabeprozess |
+| [docs/coding-agents-landscape.md](docs/coding-agents-landscape.md) | Vergleich: Gemini CLI, Claude Code, MistralVibe, OpenCode |
+| [docs/poc-open-items.md](docs/poc-open-items.md) | Offene Punkte und fehlende Informationen |
 | [docs/confluence-wiki.md](docs/confluence-wiki.md) | Confluence-Wiki (1:1 kopierbar) |
 | [docs/poc-demo-guide.md](docs/poc-demo-guide.md) | Demo-Guide: Was zeigen, was coden |
 | [docker/](docker/) | Docker-Distribution fuer Team-Rollout |
@@ -130,12 +133,18 @@ Weiterverteilung sind lizenzrechtlich unproblematisch.
 
 ## Strategischer Kontext
 
-Dieses Setup ist **kein Ersatz** fuer Gemini CLI, sondern eine Ergaenzung:
+Dieses Setup ist **kein Ersatz** fuer CoSI API oder Gemini CLI, sondern eine Ergaenzung:
 
-1. **Low-Cost-Survey:** Fruehzeitig Entwickler-Reaktionen auf CLI-basierte KI-Assistenten
-   beobachten -- ohne Lizenzkosten, ohne Cloud.
-2. **Entlastung:** Fallback bei hoher Gemini-CLI-Nutzung (Kosten/Quotas).
-3. **Fruehere Verfuegbarkeit:** Weichere ISO 27001/DORA-Anforderungen ermoeglichen
-   sofortigen Einsatz.
-4. **Ausbildung:** Lokale Modelle sind Frontier-Modellen unterlegen -- Entwickler lernen,
-   KI kritisch als Werkzeug einzusetzen, statt sich auf sie zu verlassen.
+1. **Maximaler Datenschutz:** Fuer sensiblen Code (Legacy, Geschaeftslogik) verlassen
+   keine Daten das Geraet -- ideal fuer versicherungsspezifische Anwendungsfaelle.
+2. **Sofortige Verfuegbarkeit:** Kein Softwareausbauprozess, kein Cloud Board, kein
+   Einkauf -- OSS-Workflow genuegt (analog HuggingFace-Modelle).
+3. **Entlastung:** Fallback bei CoSI-Quota-Limits (60 Req/Min) oder VPN-Ausfall.
+4. **Ausbildung:** Entwickler lernen KI kritisch als Werkzeug einzusetzen, bevor
+   teure Cloud-Tools ausgerollt werden.
+5. **Bruecke:** Produktiver Start waehrend auf Einkaufsfreigaben (Anthropic) und
+   Google Cloud Next (April 2026) gewartet wird.
+
+Siehe [docs/coding-agents-landscape.md](docs/coding-agents-landscape.md) fuer den
+vollstaendigen Vergleich und [docs/si-governance-context.md](docs/si-governance-context.md)
+fuer die Einordnung in die SI-Prozesse.

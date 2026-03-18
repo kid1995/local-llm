@@ -25,6 +25,10 @@ docs/
   data-privacy-proof.md      -- 6 methods to prove no data leaves the device
   testing-guide.md           -- 5-phase PoC test plan with scoring templates
   model-switching.md         -- How to switch models on hardware upgrade
+  si-governance-context.md   -- SI governance, CoSI API, Softwareausbauprozess
+  coding-agents-landscape.md -- Comparison: Gemini CLI, Claude Code, MistralVibe, OpenCode
+  confluence-wiki.md         -- Confluence wiki page (copy-paste ready)
+  poc-demo-guide.md          -- 3-day demo guide: what to code, how to present
 scripts/
   network-monitor.sh         -- Automated network traffic monitoring
   benchmark.sh               -- LLM performance benchmarking (tokens/sec, RAM)
